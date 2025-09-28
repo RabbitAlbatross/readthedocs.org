@@ -14,6 +14,7 @@ from readthedocs.core.utils.filesystem import safe_open
 from readthedocs.doc_builder.base import BaseBuilder
 from readthedocs.projects.constants import MKDOCS
 from readthedocs.projects.constants import MKDOCS_HTML
+from readthedocs.projects.exceptions import ProjectConfigurationError
 
 
 log = structlog.get_logger(__name__)
@@ -45,6 +46,10 @@ class BaseMkdocs(BaseBuilder):
 
         # This is the *MkDocs* yaml file
         self.yaml_file = self.get_yaml_config()
+        # Ensuring it exists btw
+        if not os.path.exists(self.yaml_file):
+            raise ProjectConfigurationError(ProjectConfigurationError.MKDOCS_NOT_FOUND)
+
 
     def get_final_doctype(self):
         """
